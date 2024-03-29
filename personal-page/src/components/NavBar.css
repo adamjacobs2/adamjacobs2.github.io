@@ -1,0 +1,32 @@
+/* Navbar.css (or use CSS-in-JS) */
+
+.navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 20%; 
+    height: 100%;
+    background-color: #333; /* Example background color */
+  }
+  
+  .navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+  
+  .navbar ul li {
+    margin-bottom: 10px;
+  }
+  
+  .navbar ul li a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+  }
+  
+  .navbar ul li a:hover {
+    background-color: #555; /* Example hover background color */
+  }
+  
