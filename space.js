@@ -3,22 +3,12 @@
   const ctx = canvas.getContext('2d');
 
   // ── Config ──────────────────────────────────────────────────────────────────
-  const STAR_COUNT       = 320;
   const NEBULA_COUNT     = 4;
   const SHOOT_INTERVAL   = 4000;  // ms between shooting star attempts
   const SHOOT_CHANCE     = 0.65;  // probability a shoot attempt fires
 
-  // Star color palette — mostly blue-white with a few warm tones
-  const STAR_COLORS = [
-    '#ffffff', '#ffffff', '#ffffff',
-    '#d0e8ff', '#c8d8ff',
-    '#ffe8c0', '#ffd090',
-    '#a0c8ff',
-  ];
-
   // ── State ────────────────────────────────────────────────────────────────────
   let W, H;
-  let stars = [];
   let nebulae = [];
   let shooters = [];
 
@@ -26,20 +16,6 @@
   function rand(min, max) { return min + Math.random() * (max - min); }
   function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
   function pick(arr) { return arr[randInt(0, arr.length - 1)]; }
-
-  // ── Star ─────────────────────────────────────────────────────────────────────
-  function makeStar() {
-    return {
-      x:         rand(0, W),
-      y:         rand(0, H),
-      r:         rand(0.3, 1.8),
-      color:     pick(STAR_COLORS),
-      phase:     rand(0, Math.PI * 2),
-      speed:     rand(0.4, 1.2),
-      drift:     rand(-0.015, 0.015),
-      baseAlpha: rand(0.55, 1.0),
-    };
-  }
 
   // ── Nebula blob ──────────────────────────────────────────────────────────────
   function makeNebula() {
@@ -77,7 +53,6 @@
     W = canvas.width  = window.innerWidth;
     H = canvas.height = window.innerHeight;
     nebulae = Array.from({ length: NEBULA_COUNT }, makeNebula);
-    stars   = Array.from({ length: STAR_COUNT },   makeStar);
   }
 
   // ── Draw ─────────────────────────────────────────────────────────────────────
@@ -113,48 +88,6 @@
       ctx.fill();
       ctx.restore();
     }
-
-    // Stars
-    const t = ts * 0.001;
-    for (const s of stars) {
-      s.x += s.drift;
-      if (s.x > W + 2) s.x = -2;
-      if (s.x < -2)    s.x = W + 2;
-
-      const twinkle = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
-      const alpha   = s.baseAlpha * (0.6 + 0.4 * twinkle);
-
-      ctx.save();
-      ctx.globalAlpha = alpha;
-
-      if (s.r > 1.1) {
-        const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
-        glow.addColorStop(0, s.color);
-        glow.addColorStop(1, 'transparent');
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.fillStyle = s.color;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    // Fade curtain — stars only visible in the top 55%, smoothly fade out below
-    const curtainStart = H * 0.42;
-    const curtainEnd   = H * 0.62;
-    const curtain = ctx.createLinearGradient(0, curtainStart, 0, curtainEnd);
-    curtain.addColorStop(0, 'rgba(5, 7, 15, 0)');
-    curtain.addColorStop(1, 'rgba(5, 7, 15, 1)');
-    ctx.fillStyle = curtain;
-    ctx.fillRect(0, curtainStart, W, curtainEnd - curtainStart);
-    // solid cover for everything below the fade
-    ctx.fillStyle = '#05070f';
-    ctx.fillRect(0, curtainEnd, W, H - curtainEnd);
 
     // Shooting stars
     if (shootTimer > SHOOT_INTERVAL) {
