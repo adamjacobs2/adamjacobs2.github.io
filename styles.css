@@ -8,18 +8,14 @@
   display: block;
 }
 
-/* ===== ARTEMIS IMAGE — right half, fading into the star canvas ===== */
+/* ===== ARTEMIS IMAGE — full background ===== */
 #artemis-bg {
   position: fixed;
-  right: 0;
-  top: 0;
-  width: 58%;
+  inset: 0;
+  width: 100%;
   height: 100%;
   z-index: -1;
   background: url('artemis.jpg') center/cover no-repeat;
-  /* Fade left edge into the canvas stars */
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);
-          mask-image: linear-gradient(to right, transparent 0%, black 40%);
   opacity: 1;
 }
 
